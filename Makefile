@@ -15,7 +15,7 @@
 # file ambre.mk
 #
 HOSTNAME?=$(shell hostname)
-include $(HOSTNAME).mk
+#include $(HOSTNAME).mk
 
 # 
 # -- Compiler Option
