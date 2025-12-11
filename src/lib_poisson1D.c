@@ -24,7 +24,12 @@ void set_analytical_solution_DBC_1D(double* EX_SOL, double* X, int* la, double* 
 }  
 
 void set_grid_points_1D(double* x, int* la){
-  // TODO: Generate uniformly spaced grid points in [0,1]
+  int n = *la;
+  double h = 1.0 / (double)(n + 1);
+
+  for(int i = 0; i < n; i++){
+    x[i] = (i + 1) * h;
+  }
 }
 
 double relative_forward_error(double* x, double* y, int* la){
@@ -33,8 +38,10 @@ double relative_forward_error(double* x, double* y, int* la){
 }
 
 int indexABCol(int i, int j, int *lab){
-  // TODO: Return the correct index formula for column-major band storage
-  return 0;
+  int kv = *lab - 2;          
+  int k = i - j + kv;         
+  return k + j * (*lab);
+
 }
 
 int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info){
