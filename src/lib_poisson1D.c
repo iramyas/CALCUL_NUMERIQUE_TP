@@ -54,13 +54,33 @@ void set_GB_operator_colMajor_poisson1D_Id(double* AB, int *lab, int *la, int *k
 
 
 void set_dense_RHS_DBC_1D(double* RHS, int* la, double* BC0, double* BC1){
-  // TODO: Compute RHS vector
-}  
+    int n = *la;
+    int i;
+
+    /* on part de RHS = 0 */
+    for (i = 0; i < n; i++){
+        RHS[i] = 0.0;
+    }
+    double h = 1.0 / (double)(n + 1);
+
+    /* contributions des bords (schéma -u'' ≈ (2u_i - u_{i-1} - u_{i+1}) / h^2) */
+    RHS[0]     += (*BC0) / (h*h);      /* i = 1 -> terme en u_0 */
+    RHS[n-1]   += (*BC1) / (h*h);      /* i = n -> terme en u_{n+1} */
+}
+
 
 void set_analytical_solution_DBC_1D(double* EX_SOL, double* X, int* la, double* BC0, double* BC1){
-  // TODO: Compute the exact analytical solution at each grid point
-  // This depends on the source term f(x) used in set_dense_RHS_DBC_1D
-}  
+    int n = *la;
+    int i;
+    double T0 = *BC0;
+    double T1 = *BC1;
+
+    for (i = 0; i < n; i++){
+        double x = X[i];
+        EX_SOL[i] = T0 + (T1 - T0) * x;
+    }
+}
+ 
 
 void set_grid_points_1D(double* x, int* la){
   int n = *la;
