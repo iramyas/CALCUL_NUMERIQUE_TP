@@ -6,8 +6,35 @@
 #include "lib_poisson1D.h"
 
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
-  // TODO: Fill AB with the tridiagonal Poisson operator
+    int n = *la;
+    int lab_ = *lab;
+
+    /* mettre tout à 0 */
+    for(int j = 0; j < n; j++){
+        for(int i = 0; i < lab_; i++){
+            AB[i + j*lab_] = 0.0;
+        }
+    }
+    /* remplir la tridiagonale */
+    for(int j = 0; j < n; j++){
+        /* diag principale */
+        int i = j;
+        AB[indexABCol(i, j, lab)] = 2.0;
+
+        /* sous-diagonale (i = j-1) */
+        if(j > 0){
+            i = j - 1;
+            AB[indexABCol(i, j, lab)] = -1.0;
+        }
+
+        /* sur-diagonale (i = j+1) */
+        if(j < n - 1){
+            i = j + 1;
+            AB[indexABCol(i, j, lab)] = -1.0;
+        }
+    }
 }
+
 
 void set_GB_operator_colMajor_poisson1D_Id(double* AB, int *lab, int *la, int *kv){
   // TODO: Fill AB with the identity matrix
