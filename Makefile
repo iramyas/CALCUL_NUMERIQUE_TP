@@ -17,6 +17,14 @@
 HOSTNAME?=$(shell hostname)
 #include $(HOSTNAME).mk
 
+# Detect macOS and prefer Accelerate framework
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	LIBSLOCAL=-framework Accelerate
+	INCLUDEBLASLOCAL=
+	OPTCLOCAL+= -DACCELERATE_NEW_LAPACK
+endif
+
 # 
 # -- Compiler Option
 OPTC=${OPTCLOCAL}
