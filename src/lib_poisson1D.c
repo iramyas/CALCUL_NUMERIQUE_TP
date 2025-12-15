@@ -92,8 +92,21 @@ void set_grid_points_1D(double* x, int* la){
 }
 
 double relative_forward_error(double* x, double* y, int* la){
-  // TODO: Compute the relative error using BLAS functions (dnrm2, daxpy or manual loop)
-  return 0.0;
+    int n = *la;
+    int i;
+    double num = 0.0;
+    double den = 0.0;
+
+    for (i = 0; i < n; i++){
+        double diff = x[i] - y[i];
+        num += diff * diff;
+        den += y[i] * y[i];
+    }
+
+    if (den == 0.0){
+        return 0.0;
+    }
+    return sqrt(num / den);
 }
 
 int indexABCol(int i, int j, int *lab){
