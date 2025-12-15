@@ -22,8 +22,7 @@ int main(int argc,char *argv[])
 /* ** argc: Nombre d'arguments */
 /* ** argv: Valeur des arguments */
 {
-  int ierr;                      /* Error code for various operations */
-  int jj;                        /* Loop counter */
+  /* suppression: ierr, jj */
   int nbpoints, la;              /* nbpoints: total points, la: interior points */
   int ku, kl, kv, lab;           /* Band matrix parameters: ku/kl=super/sub diagonals, kv=extra space, lab=leading dimension */
   int *ipiv;                     /* Pivot indices for LU factorization */
@@ -32,7 +31,7 @@ int main(int argc,char *argv[])
   int IMPLEM = 0;                /* Implementation method (TRF, TRI, or SV) */
   double T0, T1;                 /* Boundary conditions: T0 at x=0, T1 at x=1 */
   double *RHS, *EX_SOL, *X;      /* RHS: right-hand side, EX_SOL: exact solution, X: grid points */
-  double **AAB;                  /* Unused variable */
+  /* double **AAB;  */
   double *AB;                    /* Coefficient matrix in band storage */
 
   double relres;                 /* Relative forward error */
@@ -97,7 +96,9 @@ int main(int argc,char *argv[])
   if (IMPLEM == TRI || IMPLEM == TRF){
     /* Solution (Triangular) - solve using the LU factors */
     if (info==0){
-      dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+      dgbtrs_("N", &la, &kl, &ku, &NRHS,
+        AB, &lab, ipiv,
+        RHS, &la, &info);
       if (info!=0){printf("\n INFO DGBTRS = %d\n",info);}
     }else{
       printf("\n INFO = %d\n",info);
