@@ -7,6 +7,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
-#include <values.h>
+/* <values.h> (probleme) soit <float.h> ou <limits.h>  */
 #include <limits.h>
 #include "atlas_headers.h"
