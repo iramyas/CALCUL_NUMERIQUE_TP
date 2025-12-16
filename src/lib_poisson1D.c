@@ -4,6 +4,7 @@
 /* Poisson problem (Heat equation)            */
 /**********************************************/
 #include "lib_poisson1D.h"
+#include <math.h> 
 
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
     int n = *la;
@@ -114,7 +115,47 @@ int indexABCol(int i, int j, int *lab){
 
 }
 
-int dgbtrftridiag(int *la, int*n, int *kl, int *ku, double *AB, int *lab, int *ipiv, int *info){
-  // TODO: Implement specialized LU factorization for tridiagonal matrices
+
+
+int dgbtrftridiag(int *la, int *n, int *kl, int *ku,
+                  double *AB, int *lab, int *ipiv, int *info)
+{
+    int N    = *n;
+    int LDAB = *lab;     
+    int j;
+
+    *info = 0;
+
+    /* Pivot identité */
+    for (j = 0; j < N; j++) ipiv[j] = j + 1;
+
+    /* LU tridiagonale: pour j=0..N-2 */
+    for (j = 0; j < N - 1; j++) {
+
+      /* U(j,j) est sur la diagonale: ligne 2, colonne j */
+      double Ujj = AB[2 + j*LDAB];
+      if (fabs(Ujj) < 1e-15) {
+        *info = j + 1; 
+        return *info;
+      }
+
+      /*sous-diagonale ligne 3, colonne j */
+      double Ljp1j = AB[3 + j*LDAB] / Ujj;
+      AB[3 + j*LDAB] = Ljp1j;   /* on stocke L dans AB */
+
+        /* 
+        U(j,j+1) est stocké dans la colonne (j+1), ligne 1 (car i=j, col=j+1)
+        */
+      double Uj_jp1 = AB[1 + (j+1)*LDAB];
+
+        /*U(j+1,j+1) -= L(j+1,j)*U(j,j+1) */
+      AB[2 + (j+1)*LDAB] -= Ljp1j * Uj_jp1;
+    }
+
+    /* Dernier pivot */
+    if (fabs(AB[2 + (N-1)*LDAB]) < 1e-15) {
+      *info = N;
+    }
+
   return *info;
 }
