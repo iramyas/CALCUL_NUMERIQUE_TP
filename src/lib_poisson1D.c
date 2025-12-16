@@ -62,10 +62,8 @@ void set_dense_RHS_DBC_1D(double* RHS, int* la, double* BC0, double* BC1){
         RHS[i] = 0.0;
     }
     double h = 1.0 / (double)(n + 1);
-
-    /* contributions des bords (schéma -u'' ≈ (2u_i - u_{i-1} - u_{i+1}) / h^2) */
-    RHS[0]     += (*BC0) / (h*h);      /* i = 1 -> terme en u_0 */
-    RHS[n-1]   += (*BC1) / (h*h);      /* i = n -> terme en u_{n+1} */
+    RHS[0]     += (*BC0) ;      
+    RHS[n-1]   += (*BC1);      
 }
 
 
