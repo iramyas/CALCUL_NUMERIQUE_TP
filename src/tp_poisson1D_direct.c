@@ -5,6 +5,9 @@
 /* using direct methods (LU factorization)*/
 /******************************************/
 #include "lib_poisson1D.h"
+//#include <lapacke.h>
+
+
 
 #define TRF 0  /* Use LAPACK dgbtrf for LU factorization */
 #define TRI 1  /* Use custom tridiagonal LU factorization */
@@ -106,9 +109,25 @@ int main(int argc,char *argv[])
   }
 
   /* Alternative: solve directly using dgbsv */
-  if (IMPLEM == SV) {
-    // TODO : use dgbsv
-  }
+if (IMPLEM == SV) {
+    /* Résolution directe A*X = RHS avec DGBSV  */
+
+    dgbsv_(&la,      /* n */
+           &kl,      /* kl */
+           &ku,      /* ku */
+           &NRHS,    /* nrhs */
+           AB,       /* ab   */
+           &lab,     /* ldab */
+           ipiv,     /* pivots */
+           RHS,      /* b en entrée, x en sortie */
+           &la,      /* ldb */
+           &info);   /* info */
+
+    if (info != 0) {
+        printf("DGBSV failed, info = %d\n", info);
+    }
+}
+
 
   /* Write results to files */
   write_GB_operator_colMajor_poisson1D(AB, &lab, &la, "LU.dat");  /* LU factors */
